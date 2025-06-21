@@ -1,4 +1,4 @@
-import {useState} from "react"
+import { useRef, useState } from "react";
 // import logo from "../assets/logo.png"
 import { NAVIGATION_LINKS } from "../constants";
 import { FaBars, FaTimes } from 'react-icons/fa';
@@ -6,6 +6,8 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState (false);
+    const [hoverStyle, setHoverStyle] = useState({ left: 0, width: 0, opacity: 0 });
+    const containerRef = useRef(null);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -28,27 +30,63 @@ const Navbar = () => {
         setIsMobileMenuOpen(false);
     }
 
+    const handleMouseEnter = (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const containerRect = containerRef.current.getBoundingClientRect();
+        setHoverStyle({
+        left: rect.left - containerRect.left,
+        width: rect.width,
+        opacity: 1,
+        });
+    };
+
+    const handleMouseLeave = () => {
+    setHoverStyle((prev) => ({ ...prev, opacity: 0 }));
+    };
+
     return (
-            <nav className="fixed flex flex-row items-center justify-center left-0 right-0 top-4 z-50">
-                {/* Desktop Menu */}
-                <div className="mx-auto hidden max-w-xl p-10 items-center justify-center full
-                border borderstone-50/30 bg-black/20 py-3 backdrop-blur-lg lg:flex">
-                    <div className=" flex items-center justify-between gap-6">
-                        <div>
-                            <ul className="flex items-center gap-4">
-                                {NAVIGATION_LINKS.map((item, index) => (
-                                    <li className="text-lg hover:text-yellow-400" key={index}>
-                                        <a href={item.href}
-                                        onClick={(e) => handleClick(e, item.href)}
-                                        >
-                                        {item.label}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        <nav className="fixed top-4 left-0 right-0 z-50 flex justify-center">
+        {/* Desktop Menu */}
+        <div  
+            ref={containerRef}
+            className="relative mx-auto hidden max-w-xl items-center justify-center border border-white/30
+             bg-black/20 px-10 py-3 backdrop-blur-lg lg:flex">
+            {/* Top Line */}
+            <div
+            className="absolute top-0 h-1 bg-yellow-400 rounded-full transition-all duration-300"
+            style={{
+                left: `${hoverStyle.left}px`,
+                width: `${hoverStyle.width}px`,
+                opacity: hoverStyle.opacity,
+            }}
+            ></div>
+
+            {/* Bottom Line */}
+            <div
+            className="absolute bottom-0 h-1 bg-yellow-400 rounded-full transition-all duration-300"
+            style={{
+                left: `${hoverStyle.left}px`,
+                width: `${hoverStyle.width}px`,
+                opacity: hoverStyle.opacity,
+            }}
+            ></div>
+
+            <ul className="flex items-center gap-4">
+            {NAVIGATION_LINKS.map((item, index) => (
+                <li className="text-lg" key={index}>
+                <a
+                    href={item.href}
+                    onClick={(e) => handleLinkClick(e, item.href)}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    className="px-3 py-2 text-white hover:text-yellow-400 transition-colors duration-200"
+                >
+                    {item.label}
+                </a>
+                </li>
+            ))}
+            </ul>
+        </div>
                 {/* Mobile Menu */}
                 <div className="rounded-lg backdrop-blur-md lg:hidden">
                     <div className="flex items-center justify-between">
