@@ -10,7 +10,7 @@ const BrainrotTranslator = () => {
   };
 
   return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-4 font-sans text-white">
+        <div id="translate" className="min-h-screen flex flex-col items-center justify-center p-4 font-sans text-white">
         <header className="text-center mb-10">
             {/* Logo */}
             <div className="inline-block mb-4">

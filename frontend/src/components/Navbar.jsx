@@ -1,34 +1,47 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // import logo from "../assets/logo.png"
 import { NAVIGATION_LINKS } from "../constants";
 import { FaBars, FaTimes } from 'react-icons/fa';
 
 
 const Navbar = () => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState (false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [hoverStyle, setHoverStyle] = useState({ left: 0, width: 0, opacity: 0 });
+    const [activeHash, setActiveHash] = useState(window.location.hash || "#");
     const containerRef = useRef(null);
+    const linkRefs = useRef([]);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     }
 
-    const handleLinkClick = (e, href) => {
+    const handleLinkClick = (e, href, index) => {
         e.preventDefault();
-        const targetElement = document.querySelector
-        (href);
-        if (targetElement) {
-            const offset = -85;
-            const elementPosition = targetElement.getBoundingCLientRect().top;
-            const offsetPosition = elementPosition + window.scrollY + offset;
-            
-            window.scrollTo({
-                top: offsetPosition,
-                behaviour: "smooth",
-            })
-        }
+        window.location.hash = href;
+        setActiveHash(href);
         setIsMobileMenuOpen(false);
-    }
+
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+        const offset = -85;
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY + offset;
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+        });
+        }
+
+        // Set line position to the clicked element
+        const rect = linkRefs.current[index].getBoundingClientRect();
+        const containerRect = containerRef.current.getBoundingClientRect();
+        setHoverStyle({
+        left: rect.left - containerRect.left,
+        width: rect.width,
+        opacity: 1,
+        });
+    };
+
 
     const handleMouseEnter = (e) => {
         const rect = e.target.getBoundingClientRect();
@@ -41,16 +54,46 @@ const Navbar = () => {
     };
 
     const handleMouseLeave = () => {
-    setHoverStyle((prev) => ({ ...prev, opacity: 0 }));
+        const index = NAVIGATION_LINKS.findIndex(link => link.href === activeHash);
+        if (index !== -1 && linkRefs.current[index]) {
+        const rect = linkRefs.current[index].getBoundingClientRect();
+        const containerRect = containerRef.current.getBoundingClientRect();
+        setHoverStyle({
+            left: rect.left - containerRect.left,
+            width: rect.width,
+            opacity: 1,
+        });
+        }
     };
+
+    useEffect(() => {
+        const updateHash = () => {
+        const newHash = window.location.hash || "#";
+        setActiveHash(newHash);
+        const index = NAVIGATION_LINKS.findIndex(link => link.href === newHash);
+        if (index !== -1 && linkRefs.current[index]) {
+            const rect = linkRefs.current[index].getBoundingClientRect();
+            const containerRect = containerRef.current.getBoundingClientRect();
+            setHoverStyle({
+            left: rect.left - containerRect.left,
+            width: rect.width,
+            opacity: 1,
+            });
+        }
+        };
+
+        window.addEventListener("hashchange", updateHash);
+        updateHash(); // Run on initial load
+        return () => window.removeEventListener("hashchange", updateHash);
+    }, []);
 
     return (
         <nav className="fixed top-4 left-0 right-0 z-50 flex justify-center">
         {/* Desktop Menu */}
-        <div  
+        <div
             ref={containerRef}
             className="relative mx-auto hidden max-w-xl items-center justify-center border border-white/30
-             bg-black/20 px-10 py-3 backdrop-blur-lg lg:flex">
+            bg-black/20 px-10 py-3 backdrop-blur-lg lg:flex">
             {/* Top Line */}
             <div
             className="absolute top-0 h-1 bg-yellow-400 rounded-full transition-all duration-300"
@@ -76,10 +119,13 @@ const Navbar = () => {
                 <li className="text-lg" key={index}>
                 <a
                     href={item.href}
-                    onClick={(e) => handleLinkClick(e, item.href)}
+                    ref={(el) => (linkRefs.current[index] = el)}
+                    onClick={(e) => handleLinkClick(e, item.href, index)}
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
-                    className="px-3 py-2 text-white hover:text-yellow-400 transition-colors duration-200"
+                    className={`px-3 py-2 text-white transition-colors duration-200 ${
+                    activeHash === item.href ? "text-yellow-400" : "hover:text-yellow-400"
+                    }`}
                 >
                     {item.label}
                 </a>
