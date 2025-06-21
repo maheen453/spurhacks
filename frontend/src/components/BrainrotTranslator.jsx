@@ -59,4 +59,4 @@ const BrainrotTranslator = () => {
   );
 };
 
-export default BrainrotTranslator; 
+export default BrainrotTranslator 
