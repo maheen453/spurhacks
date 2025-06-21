@@ -18,7 +18,7 @@ const BrainrotTranslator = () => {
             <h1 className="text-3xl font-bold text-black">Brainrot Translator</h1>
         </header>
 
-        <main className="w-full max-w-4xl flex flex-col md:flex-row gap-12  m-64">
+        <main className="w-full max-w-4xl flex flex-col md:flex-row gap-12 ml-64 mr-64">
             {/* Input Area */}
             <div className="flex-1 relative">
             <label htmlFor="input-text" className="text-gray-400 text-sm font-medium absolute top-3 left-4">
