@@ -175,7 +175,7 @@ async def caption_image(file: UploadFile = File(...)):
         # 3. Send description into slang model to generate funny caption
         messages_for_api = [
             (slang_instructions, "user"),
-            (f"Make a caption for this image: {image_description}", "user")
+            (f"Make a caption for this image and only return the caption, no other text: {image_description}", "user")
         ]
         slang_caption = call_gemini_api(messages_for_api)
 
