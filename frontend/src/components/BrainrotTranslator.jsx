@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SlArrowRightCircle } from "react-icons/sl";
 
 const BrainrotTranslator = () => {
   const [inputText, setInputText] = useState('');
@@ -28,6 +29,14 @@ const BrainrotTranslator = () => {
                 className="w-full h-64 bg-[#1C1C1E] border border-gray-700 rounded-xl p-4 pt-10 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Type or paste your text here..."
             />
+
+                <button
+                    onClick={handleTranslate}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <div className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <SlArrowRightCircle className="w-6 h-6" />
+                    </div>
+                </button>
             </div>
 
             {/* Output Area */}
