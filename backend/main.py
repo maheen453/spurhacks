@@ -3,19 +3,20 @@ import requests
 import json
 import base64
 from fastapi import FastAPI, HTTPException
+from fastapi import UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 from dotenv import load_dotenv
 import traceback
 from typing import Optional
+# import google.generativeai as genai
 
 # Load environment variables from .env file
 load_dotenv()
 
 # --- Configuration from environment variables ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
 if not GEMINI_API_KEY:
     raise ValueError("Missing GEMINI_API_KEY environment variable. Check your .env file.")
 
@@ -95,6 +96,37 @@ def call_gemini_api(messages):
         raise Exception(f"Failed to parse API response as JSON: {e}. Raw response: {response.text if 'response' in locals() else 'N/A'}")
     except Exception as e:
         raise Exception(f"An unexpected error occurred while calling Gemini API: {e}")
+    
+def encode_image_base64(upload_file: UploadFile):
+    return base64.b64encode(upload_file.file.read()).decode("utf-8")
+
+def call_gemini_image_api(base64_image: str, mime_type: str):
+    headers = {'Content-Type': 'application/json'}
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    { "text": "Describe this image in plain English." },
+                    {
+                        "inlineData": {
+                            "mimeType": mime_type,
+                            "data": base64_image
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+    params = {'key': GEMINI_API_KEY}
+    try:
+        res = requests.post(GEMINI_API_URL, headers=headers, params=params, json=payload)
+        res.raise_for_status()
+        data = res.json()
+        return data['candidates'][0]['content']['parts'][0]['text']
+    except Exception as e:
+        traceback.print_exc()
+        raise Exception(f"Gemini Image API Error: {e}")
+
 
 
 @app.post("/chat/")
@@ -114,6 +146,16 @@ async def chat_with_slang_model(message_data: Message):
         print(f"Error during chat: {e}")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal server error while processing message: {e}")
+    
+@app.post("/describe-image/")
+async def describe_image(file: UploadFile = File(...)):
+    try:
+        base64_img = encode_image_base64(file)
+        mime_type = file.content_type
+        description = call_gemini_image_api(base64_img, mime_type)
+        return {"description": description}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     print("Starting FastAPI server with Gemini API...")
