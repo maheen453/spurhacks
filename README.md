@@ -52,6 +52,8 @@ Make sure your React app runs on http://localhost:5173
 ```bash
 cd backend
 pip install -r requirements.txt
+create a .env file and put your Gemini API key in it
+GEMINI_API_KEY=Your API Key
 ```
 ### 5. Run the Server
 ``` bash
