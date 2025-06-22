@@ -20,15 +20,38 @@ const Upload = () => {
     }
   };
 
-  const generateCaption = (imageData) => {
+  const generateCaption = async (imageData) => {
     setIsLoading(true);
-    // Simulate API call to generate caption
-    setTimeout(() => {
-      const newCaption = 'A beautiful landscape with mountains and a lake. (Simulated)';
-      setCaption(newCaption);
-      setEditedCaption(newCaption);
+    
+    try {
+      // Convert base64 data URL back to file
+      const response = await fetch(imageData);
+      const blob = await response.blob();
+      
+      // Create FormData with the image file
+      const formData = new FormData();
+      formData.append('file', blob, 'image.jpg');
+      
+      // Send to your backend
+      const apiResponse = await fetch('http://localhost:8000/describe-image/', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!apiResponse.ok) {
+        throw new Error('Failed to get image description');
+      }
+      
+      const data = await apiResponse.json();
+      setCaption(data.description);
+      setEditedCaption(data.description);
+    } catch (error) {
+      console.error('Error generating caption:', error);
+      setCaption('Error generating caption. Please try again.');
+      setEditedCaption('Error generating caption. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleRegenerate = () => {
