@@ -167,7 +167,7 @@ const ChatBox = () => {
                   : "Ask anything..."
             }
             disabled={isLoading || conversationLimitReached}
-            className="w-full py-4 pl-5 pr-16 border-2 border-blue-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-black w-full py-4 pl-5 pr-16 border-2 border-blue-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             onClick={handleSendMessage}
