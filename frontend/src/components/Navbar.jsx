@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 // import logo from "../assets/logo.png"
-import { NAVIGATION_LINKS } from "../constants";
+import { NAVIGATION_LINKS } from "../constants/index";
 import { FaBars, FaTimes } from 'react-icons/fa';
 
 
@@ -67,25 +67,46 @@ const Navbar = () => {
     };
 
     useEffect(() => {
-        const updateHash = () => {
-        const newHash = window.location.hash || "#";
-        setActiveHash(newHash);
-        const index = NAVIGATION_LINKS.findIndex(link => link.href === newHash);
-        if (index !== -1 && linkRefs.current[index]) {
-            const rect = linkRefs.current[index].getBoundingClientRect();
-            const containerRect = containerRef.current.getBoundingClientRect();
-            setHoverStyle({
-            left: rect.left - containerRect.left,
-            width: rect.width,
-            opacity: 1,
-            });
+    const observer = new IntersectionObserver(
+        (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+            const newHash = `#${entry.target.id}`;
+            if (newHash !== activeHash) {
+                setActiveHash(newHash);
+                if (window.location.hash !== newHash) {
+                window.history.replaceState(null, "", newHash);
+                }
+                const index = NAVIGATION_LINKS.findIndex(link => link.href === newHash);
+                if (linkRefs.current[index]) {
+                const rect = linkRefs.current[index].getBoundingClientRect();
+                const containerRect = containerRef.current.getBoundingClientRect();
+                setHoverStyle({
+                    left: rect.left - containerRect.left,
+                    width: rect.width,
+                    opacity: 1,
+                });
+                }
+            }
+            }
+        });
+        },
+        {
+        root: null,
+        rootMargin: '-50% 0px -50% 0px', // triggers when section is centered vertically
+        threshold: 0
         }
-        };
+    );
 
-        window.addEventListener("hashchange", updateHash);
-        updateHash(); // Run on initial load
-        return () => window.removeEventListener("hashchange", updateHash);
-    }, []);
+    NAVIGATION_LINKS.forEach(link => {
+        const sec = document.getElementById(link.href.substring(1));
+        if (sec) observer.observe(sec);
+    });
+
+    return () => observer.disconnect();
+    }, [activeHash]);
+
+
 
     return (
         <nav className="fixed top-4 left-0 right-0 z-50 flex justify-center">

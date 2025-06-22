@@ -14,7 +14,6 @@ const App = () => {
         <BrainrotTranslator/>
         <Chatbot/>
         <Upload/>
-
       </div>
     </div>
   )
