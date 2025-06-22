@@ -79,13 +79,16 @@ const Upload = () => {
   };
 
   return (
-    <div id="caption" className="w-full max-w-2xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-        Captions
-      </h2>
+    <div id="caption" className="w-full max-w-4xl mx-auto px-4 py-8">
+      <div className="text-center mb-8">
+        <h2 className="text-4xl font-bold text-white mb-4">
+          Smart <span className="text-yellow-400">Captions</span>
+        </h2>
+        <p className="text-gray-300 text-lg">Upload an image and get trendy Gen Z-style captions!</p>
+      </div>
 
       <div 
-        className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-center bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
+        className="w-full h-64 border-2 border-dashed border-white/30 rounded-xl flex items-center justify-center text-center bg-white/10 backdrop-blur-md hover:bg-white/15 cursor-pointer transition-colors"
         onClick={triggerFileSelect}
       >
         <input
@@ -102,10 +105,10 @@ const Upload = () => {
             <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
               <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-300">
               Click to upload an image
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-400">
               PNG, JPG, GIF up to 10MB
             </p>
           </div>
@@ -114,8 +117,8 @@ const Upload = () => {
 
       {/* Caption Display/Edit Area */}
       {caption && !isLoading && !isEditing && (
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-          <p className="text-lg text-gray-800">{caption}</p>
+        <div className="mt-6 p-6 bg-yellow-400/20 border border-yellow-400/30 rounded-xl text-center">
+          <p className="text-lg text-white">{caption}</p>
         </div>
       )}
 
@@ -124,7 +127,7 @@ const Upload = () => {
           <textarea
             value={editedCaption}
             onChange={(e) => setEditedCaption(e.target.value)}
-            className= " text-black w-full p-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-white w-full p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400/50 placeholder-gray-400"
             rows="3"
           />
         </div>
@@ -132,23 +135,24 @@ const Upload = () => {
 
       {isLoading && (
         <div className="mt-6 text-center">
-          <p className="text-lg text-gray-600">Generating caption...</p>
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-400 mb-3"></div>
+          <p className="text-lg text-gray-300">Generating caption...</p>
         </div>
       )}
 
       {/* Buttons */}
-      <div className="mt-6 flex justify-center space-x-4">
+      <div className="mt-8 flex justify-center space-x-4">
         {isEditing ? (
           <>
             <button
               onClick={handleSave}
-              className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+              className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium"
             >
               Save
             </button>
             <button
               onClick={handleCancel}
-              className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
+              className="px-6 py-3 bg-white/10 backdrop-blur-md text-white rounded-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 transition-colors font-medium border border-white/20"
             >
               Cancel
             </button>
@@ -158,14 +162,14 @@ const Upload = () => {
             <button
               onClick={handleRegenerate}
               disabled={!image || isLoading}
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-3 bg-yellow-400 text-black rounded-lg hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               Regenerate
             </button>
             <button
               onClick={handleEdit}
               disabled={!caption || isLoading}
-              className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-3 bg-white/10 backdrop-blur-md text-white rounded-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium border border-white/20"
             >
               Edit
             </button>

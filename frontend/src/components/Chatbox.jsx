@@ -8,9 +8,12 @@ const ChatBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationLimitReached, setConversationLimitReached] = useState(false);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -93,67 +96,82 @@ const ChatBox = () => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      e.stopPropagation();
       handleSendMessage();
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleSendMessage();
   };
 
   // Count user messages for display
   const userMessageCount = messages.filter(msg => msg.sender === 'user').length;
 
   return (
-    <div id="chat" className="w-full max-w-2xl mx-auto px-4 py-8 flex flex-col" style={{ minHeight: '60vh' }}>
+    <div id="chat" className="w-full max-w-4xl mx-auto px-4 py-8 flex flex-col pt-24" style={{ minHeight: '60vh' }}>
       
       {/* Messages Display (conditionally rendered and grows) */}
       <div className="flex-grow w-full">
         {messages.length > 0 && (
-          <div className="h-full bg-white rounded-lg p-4 overflow-y-auto" style={{maxHeight: '40vh'}}>
+          <div
+            ref={messagesContainerRef}
+            className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20"
+            style={{ maxHeight: '50vh', overflowY: 'auto' }}
+          >
             {/* Message counter */}
-            <div className="text-xs text-gray-500 mb-3 text-center">
+            <div className="text-xs text-gray-300 mb-4 text-center font-medium">
               Messages: {userMessageCount}/5
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-xs px-3 py-2 rounded-lg ${
+                    className={`max-w-xs px-4 py-3 rounded-xl ${
                       message.sender === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-yellow-400/20 text-white border border-yellow-400/30'
+                        : 'bg-white/10 text-white border border-white/20'
                     }`}
                   >
                     <p className="text-sm">{message.text}</p>
                   </div>
                 </div>
               ))}
-              <div ref={messagesEndRef} />
             </div>
           </div>
         )}
       </div>
 
       {/* Title and Input Container */}
-      <div className={`w-full transition-all duration-500 ease-in-out ${messages.length > 0 ? 'mt-2' : 'my-auto'}`}>
+      <div className={`w-full transition-all duration-500 ease-in-out ${messages.length > 0 ? 'mt-6' : 'my-auto'}`}>
         
         {messages.length === 0 && (
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-                Goofy Ahh Friend
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Goofy Ahh <span className="text-yellow-400">Friend</span>
             </h2>
+            <p className="text-gray-300 text-lg">
+              Chat with our Gen Z AI assistant to understand modern communication!
+            </p>
+          </div>
         )}
 
         {/* Conversation limit reached message */}
         {conversationLimitReached && (
-          <div className="text-center mb-4 p-3 bg-yellow-100 border border-yellow-300 rounded-lg">
-            <p className="text-yellow-800 font-medium">Conversation limit reached!</p>
-            <p className="text-yellow-700 text-sm">Click "Reset Chatbot" to start a new conversation.</p>
+          <div className="text-center mb-6 p-4 bg-yellow-400/20 border border-yellow-400/30 rounded-xl">
+            <p className="text-yellow-400 font-medium">Conversation limit reached!</p>
+            <p className="text-gray-300 text-sm mt-1">Click "Reset Chatbot" to start a new conversation.</p>
           </div>
         )}
 
         {/* Chat Input */}
-        <div className="relative w-full">
+        <form onSubmit={handleSubmit} className="relative w-full" autoComplete="off">
           <input
             type="text"
             value={inputMessage}
@@ -167,25 +185,25 @@ const ChatBox = () => {
                   : "Ask anything..."
             }
             disabled={isLoading || conversationLimitReached}
-            className="text-black w-full py-4 pl-5 pr-16 border-2 border-blue-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-white w-full py-4 pl-5 pr-16 bg-white/10 backdrop-blur-md border-2 border-white/20 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400/50 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-400"
           />
           <button
-            onClick={handleSendMessage}
+            type="submit"
             disabled={!inputMessage.trim() || isLoading || conversationLimitReached}
             className="absolute inset-y-0 right-0 flex items-center pr-3"
           >
-            <div className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <div className="p-2 bg-yellow-400 text-black rounded-full hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
               <SlArrowRightCircle className="w-6 h-6" />
             </div>
           </button>
-        </div>
+        </form>
         
         {/* Action buttons */}
-        <div className="text-center mt-4 space-x-4">
+        <div className="text-center mt-6 space-x-4">
           {messages.length > 0 && !conversationLimitReached && (
             <button
               onClick={clearChat}
-              className="text-sm text-gray-500 hover:text-gray-700 underline"
+              className="text-sm text-gray-300 hover:text-yellow-400 underline transition-colors"
             >
               Clear Chat
             </button>
@@ -194,7 +212,7 @@ const ChatBox = () => {
           {conversationLimitReached && (
             <button
               onClick={clearChat}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              className="px-6 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 transition-colors font-medium"
             >
               Reset Chatbot
             </button>
