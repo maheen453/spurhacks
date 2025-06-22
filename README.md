@@ -36,8 +36,7 @@ A chaotic AI-powered React app that converts plain text into Gen Z slang using t
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/brainrot-translator.git
-cd brainrot-translator
+git clone https://github.com/maheen453/spurhacks.git
 ```
 
 ### 2. Set up and run the React app
@@ -52,14 +51,7 @@ Make sure your React app runs on http://localhost:5173
 ### 3. Set up and run the Python backend
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-### 4. Create a .env file in the backend folder with your Gemini API key:
-```
-GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 ### 5. Run the Server
 ``` bash
