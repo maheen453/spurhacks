@@ -15,29 +15,23 @@ const BrainrotTranslator = () => {
             {/* Logo */}
             <div className="inline-block mb-4">
             </div>
-            <h1 className="text-3xl font-bold text-black">Brainrot Translator</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Brainrot Translator</h1>
         </header>
 
         <main className="w-full max-w-4xl flex flex-col md:flex-row gap-12 ml-64 mr-64">
             {/* Input Area */}
             <div className="flex-1 relative">
-            <label htmlFor="input-text" className="text-gray-400 text-sm font-medium absolute top-3 left-4">
-                Normal
-            </label>
             <textarea
                 id="input-text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                className="w-full h-64 bg-[#1C1C1E] border border-gray-700 rounded-xl p-4 pt-10 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+                className="w-full h-64 bg-[#1C1C1E] border border-gray-700 rounded-xl p-4 pt-10 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Type or paste your text here..."
             />
             </div>
 
             {/* Output Area */}
             <div className="flex-1 relative">
-            <label htmlFor="output-text" className="text-gray-400 text-sm font-medium absolute top-3 left-4">
-                Translation
-            </label>
             <textarea
                 id="output-text"
                 readOnly
