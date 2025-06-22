@@ -60,6 +60,7 @@ The word "freaky", is used very common these days e.g wow he's so freaky.
 "glazing" refers to complimenting someone, "glaze" just means compliment
 "zip his pants up when you're done", or other activities that suggest a sexual act to say you are complimenting someone way too much.
 Mentioning Lebron a lot, and always saying he is is the GOAT. Goes beyond baskebtall, glazing Lebron turned into a whole meme.
+"Jorking", "Jerkin", and most importantly "gooning" are all slang for masturbation. Gooning in particular is popular, with people being called gooners.
 """
 
 
