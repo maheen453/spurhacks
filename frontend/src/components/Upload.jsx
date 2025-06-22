@@ -33,7 +33,7 @@ const Upload = () => {
       formData.append('file', blob, 'image.jpg');
       
       // Send to your backend
-      const apiResponse = await fetch('http://localhost:8000/describe-image/', {
+      const apiResponse = await fetch('http://localhost:8000/caption-image/', {
         method: 'POST',
         body: formData,
       });
@@ -43,8 +43,8 @@ const Upload = () => {
       }
       
       const data = await apiResponse.json();
-      setCaption(data.description);
-      setEditedCaption(data.description);
+      setCaption(data.caption);
+      setEditedCaption(data.caption);
     } catch (error) {
       console.error('Error generating caption:', error);
       setCaption('Error generating caption. Please try again.');
