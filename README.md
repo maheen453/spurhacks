@@ -1,4 +1,4 @@
-# 🧠 Brainrot Translator
+# 🧠 Brainrot Translator 🤪 Goofy ChatBot 📷 Brainrot Caption
 
 A chaotic AI-powered React app that converts plain text into Gen Z slang using the Gemini API. It features a humorous, over-the-top translation model built with FastAPI on the backend and a responsive frontend using React and Tailwind CSS.
 
