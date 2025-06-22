@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { FaCopy, FaCheck } from "react-icons/fa";
 
 const Upload = () => {
   const [image, setImage] = useState(null);
@@ -6,6 +7,7 @@ const Upload = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedCaption, setEditedCaption] = useState('');
+  const [copied, setCopied] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleImageUpload = (event) => {
@@ -78,6 +80,19 @@ const Upload = () => {
     fileInputRef.current.click();
   };
 
+  const copyToClipboard = async () => {
+    const textToCopy = isEditing ? editedCaption : caption;
+    if (textToCopy) {
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    }
+  };
+
   return (
     <div id="caption" className="w-full max-w-4xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
@@ -117,19 +132,35 @@ const Upload = () => {
 
       {/* Caption Display/Edit Area */}
       {caption && !isLoading && !isEditing && (
-        <div className="mt-6 p-6 bg-yellow-400/20 border border-yellow-400/30 rounded-xl text-center">
+        <div className="mt-6 p-6 bg-yellow-400/20 border border-yellow-400/30 rounded-xl text-center relative">
           <p className="text-lg text-white">{caption}</p>
+          {/* Copy button */}
+          <button
+            onClick={copyToClipboard}
+            className="absolute bottom-4 right-4 p-2 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 rounded-lg transition-colors"
+            title="Copy to clipboard"
+          >
+            {copied ? <FaCheck className="w-4 h-4" /> : <FaCopy className="w-4 h-4" />}
+          </button>
         </div>
       )}
 
       {isEditing && (
-        <div className="mt-6">
+        <div className="mt-6 relative">
           <textarea
             value={editedCaption}
             onChange={(e) => setEditedCaption(e.target.value)}
             className="text-white w-full p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400/50 placeholder-gray-400"
             rows="3"
           />
+          {/* Copy button for editing mode */}
+          <button
+            onClick={copyToClipboard}
+            className="absolute bottom-4 right-4 p-2 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 rounded-lg transition-colors"
+            title="Copy to clipboard"
+          >
+            {copied ? <FaCheck className="w-4 h-4" /> : <FaCopy className="w-4 h-4" />}
+          </button>
         </div>
       )}
 

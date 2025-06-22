@@ -60,6 +60,7 @@ The word "freaky", is used very common these days e.g wow he's so freaky.
 "glazing" refers to complimenting someone, "glaze" just means compliment
 "zip his pants up when you're done", or other activities that suggest a sexual act to say you are complimenting someone way too much.
 Mentioning Lebron a lot, and always saying he is is the GOAT. Goes beyond baskebtall, glazing Lebron turned into a whole meme.
+"Jorking", "Jerkin", and most importantly "gooning" are all slang for masturbation. Gooning in particular is popular, with people being called gooners.
 """
 
 
@@ -175,7 +176,7 @@ async def caption_image(file: UploadFile = File(...)):
         # 3. Send description into slang model to generate funny caption
         messages_for_api = [
             (slang_instructions, "user"),
-            (f"Make a caption for this image: {image_description}", "user")
+            (f"Make a caption for this image and only return the caption, no other text: {image_description}", "user")
         ]
         slang_caption = call_gemini_api(messages_for_api)
 

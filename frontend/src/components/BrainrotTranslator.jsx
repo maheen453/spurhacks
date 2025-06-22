@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { SlArrowRightCircle } from "react-icons/sl";
+import { FaCopy, FaCheck } from "react-icons/fa";
 
 const BrainrotTranslator = () => {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleTranslate = async () => {
     if (!inputText.trim() || isLoading) return;
@@ -20,7 +22,7 @@ const BrainrotTranslator = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: `Only translate this text to Gen Z slang, don't add any other text: ${inputText}`
+          message: `I only want the translation of this text to Gen Z slang, don't add any other text. This is not a question or conversation, it is a translation: ${inputText}`
         })
       });
       
@@ -49,6 +51,19 @@ const BrainrotTranslator = () => {
   const clearText = () => {
     setInputText('');
     setOutputText('');
+    setCopied(false);
+  };
+
+  const copyToClipboard = async () => {
+    if (outputText) {
+      try {
+        await navigator.clipboard.writeText(outputText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    }
   };
 
   return (
@@ -86,7 +101,7 @@ const BrainrotTranslator = () => {
         </div>
 
         {/* Output Area */}
-        <div className="flex-1">
+        <div className="flex-1 relative">
           <textarea
             id="output-text"
             readOnly
@@ -94,20 +109,31 @@ const BrainrotTranslator = () => {
             className="w-full h-64 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 text-white resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400/50"
             placeholder={isLoading ? "Translating..." : "Translation will appear here..."}
           />
+          
+          {/* Copy button */}
+          {outputText && (
+            <button
+              onClick={copyToClipboard}
+              className="absolute bottom-4 right-4 p-2 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 rounded-lg transition-colors"
+              title="Copy to clipboard"
+            >
+              {copied ? <FaCheck className="w-4 h-4" /> : <FaCopy className="w-4 h-4" />}
+            </button>
+          )}
         </div>
       </main>
 
-      {/* Clear Button */}
-      {outputText && (
-        <div className="flex justify-center mt-6">
+      {/* Action Buttons */}
+      <div className="flex justify-center items-center gap-4 mt-8">
+        {outputText && (
           <button
             onClick={clearText}
             className="px-6 py-3 bg-white/10 backdrop-blur-md text-white rounded-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 transition-colors font-medium border border-white/20"
           >
             Clear
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Loading indicator */}
       {isLoading && (
