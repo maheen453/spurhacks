@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { SlArrowRightCircle } from "react-icons/sl";
+
 
 const ChatBox = () => {
   const [inputMessage, setInputMessage] = useState('');
@@ -102,7 +104,7 @@ const ChatBox = () => {
             className="absolute inset-y-0 right-0 flex items-center pr-3"
           >
             <div className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14m-7-7l7 7-7-7"></path></svg>
+              <SlArrowRightCircle className="w-6 h-6" />
             </div>
           </button>
         </div>
