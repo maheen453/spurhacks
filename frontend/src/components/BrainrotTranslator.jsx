@@ -52,65 +52,68 @@ const BrainrotTranslator = () => {
   };
 
   return (
-    <div id="translate" className="min-h-screen flex flex-col items-center justify-center p-4 font-sans text-white">
-      <header className="text-center mb-10">
-        {/* Logo */}
-        <div className="inline-block mb-4">
-        </div>
-        <h1 className="text-3xl font-bold text-gray-800">Brainrot Translator</h1>
-        <p className="text-gray-600 mt-2">Translate any text to Gen Z slang! (Ctrl+Enter to translate)</p>
+    <div id="translate" className="w-full max-w-6xl mx-auto px-4 py-8 pt-44">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-white mb-4">
+          Brainrot <span className="text-yellow-400">Translator</span>
+        </h1>
+        <p className="text-gray-300 text-lg">Translate any text to Gen Z slang! (Ctrl+Enter to translate)</p>
       </header>
 
-      <main className="w-full max-w-4xl flex flex-col md:flex-row gap-12 ml-64 mr-64">
+      <main className="w-full flex flex-col md:flex-row gap-4 items-center">
         {/* Input Area */}
-        <div className="flex-1 relative">
+        <div className="flex-1">
           <textarea
             id="input-text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
-            className="w-full h-64 bg-[#1C1C1E] border border-gray-700 rounded-xl p-4 pt-10 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-64 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 text-white resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400/50 disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-400"
             placeholder={isLoading ? "Translating..." : "Type or paste your text here..."}
           />
+        </div>
 
+        {/* Translate Button */}
+        <div className="flex flex-col items-center">
           <button
             onClick={handleTranslate}
             disabled={!inputText.trim() || isLoading}
-            className="absolute inset-y-0 right-0 flex items-center pr-3">
-            <div className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-              <SlArrowRightCircle className="w-6 h-6" />
-            </div>
+            className="p-3 bg-yellow-400 text-black rounded-full hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <SlArrowRightCircle className="w-6 h-6" />
           </button>
         </div>
 
         {/* Output Area */}
-        <div className="flex-1 relative">
+        <div className="flex-1">
           <textarea
             id="output-text"
             readOnly
             value={outputText}
-            className="w-full h-64 bg-[#1C1C1E] border border-gray-700 rounded-xl p-4 pt-10 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full h-64 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 text-white resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400/50"
             placeholder={isLoading ? "Translating..." : "Translation will appear here..."}
           />
-          
-          {/* Clear button */}
-          {outputText && (
-            <button
-              onClick={clearText}
-              className="absolute top-2 right-2 text-xs text-gray-400 hover:text-white underline"
-            >
-              Clear
-            </button>
-          )}
         </div>
       </main>
 
+      {/* Clear Button */}
+      {outputText && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={clearText}
+            className="px-6 py-3 bg-white/10 backdrop-blur-md text-white rounded-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 transition-colors font-medium border border-white/20"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* Loading indicator */}
       {isLoading && (
-        <div className="mt-4 text-center">
-          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-          <p className="text-gray-600 mt-2">Translating to Gen Z slang...</p>
+        <div className="mt-8 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+          <p className="text-gray-300 mt-3">Translating to Gen Z slang...</p>
         </div>
       )}
     </div>

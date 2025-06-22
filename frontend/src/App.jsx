@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from './components/Navbar'
+import About from './components/About'
 import BrainrotTranslator from './components/BrainrotTranslator'
 import Chatbot from './components/Chatbox'
 import Upload from './components/Upload'
@@ -8,13 +9,22 @@ import Upload from './components/Upload'
 
 const App = () => {
   return (
-    <div className="relative h-full overflow-y-auto antialiased">
-      <div className="relative z-10 flex flex-col items-center p-4 space-y-8 container mx-auto">
-        <Navbar/>
-        <Chatbot/>
-        <BrainrotTranslator/>
-        <Upload/>
-      </div>
+    <div className="min-h-screen">
+      <Navbar/>
+      <main className="pt-24">
+        <section>
+          <About/>
+        </section>
+        <section className="py-16">
+          <Chatbot/>
+        </section>
+        <section className="py-16 pb-32">
+          <BrainrotTranslator/>
+        </section>
+        <section className="py-8 pt-32">
+          <Upload/>
+        </section>
+      </main>
     </div>
   )
 }
