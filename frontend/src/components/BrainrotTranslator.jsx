@@ -29,6 +29,7 @@ const BrainrotTranslator = () => {
                 className="w-full h-64 bg-[#1C1C1E] border border-gray-700 rounded-xl p-4 pt-10 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Type or paste your text here..."
             />
+
                 <button
                     onClick={handleTranslate}
                     className="absolute inset-y-0 right-0 flex items-center pr-3">
