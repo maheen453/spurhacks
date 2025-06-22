@@ -136,7 +136,7 @@ const ChatBox = () => {
       </div>
 
       {/* Title and Input Container */}
-      <div className={`w-full transition-all duration-500 ease-in-out ${messages.length > 0 ? 'mt-6' : 'my-auto'}`}>
+      <div className={`w-full transition-all duration-500 ease-in-out ${messages.length > 0 ? 'mt-2' : 'my-auto'}`}>
         
         {messages.length === 0 && (
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">

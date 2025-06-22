@@ -8,9 +8,14 @@ html, body {
 }
 
 body {
-  background: gray;
-  color: #fff;
+  background: gray,;
+  background-image: url(assets/spursbackground.jpg);
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
+
+
 
 /* From Uiverse.io by gohar_7145 
 .outline {
