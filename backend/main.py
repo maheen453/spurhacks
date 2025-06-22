@@ -162,6 +162,31 @@ async def describe_image(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/caption-image/")
+async def caption_image(file: UploadFile = File(...)):
+    try:
+        # 1. Convert uploaded image to base64
+        base64_img = encode_image_base64(file)
+        mime_type = file.content_type
+
+        # 2. Get plain image description using Vision model
+        image_description = call_gemini_image_api(base64_img, mime_type)
+
+        # 3. Send description into slang model to generate funny caption
+        messages_for_api = [
+            (slang_instructions, "user"),
+            (f"Make a caption for this image: {image_description}", "user")
+        ]
+        slang_caption = call_gemini_api(messages_for_api)
+
+        # 4. Return the slang caption
+        return {"caption": slang_caption}
+    
+    except Exception as e:
+        print("Error generating caption:", e)
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     print("Starting FastAPI server with Gemini API...")
     uvicorn.run(app, host="0.0.0.0", port=8000)
