@@ -26,8 +26,6 @@ GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini
 
 app = FastAPI()
 
-app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")
-
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -41,6 +39,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+class Message(BaseModel):
+    message: str
 
 slang_instructions = """
 Make the response length approppriate to the question, so not too long if not needed.
@@ -71,9 +72,62 @@ Mentioning Lebron a lot, and always saying he is is the GOAT. Goes beyond baskeb
 "Jorking", "Jerkin", and most importantly "gooning" are all slang for masturbation. Gooning in particular is popular, with people being called gooners.
 """
 
+# Define API routes BEFORE mounting static files
+@app.post("/api/chat/")
+async def chat_with_slang_model(message_data: Message):
+    user_message = message_data.message
 
-class Message(BaseModel):
-    message: str
+    try:
+        messages_for_api = [
+            (slang_instructions, "user"),
+            (user_message, "user") 
+        ]
+        
+        model_response = call_gemini_api(messages_for_api)
+        return {"response": model_response} 
+        
+    except Exception as e:
+        print(f"Error during chat: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal server error while processing message: {e}")
+    
+@app.post("/api/describe-image/")
+async def describe_image(file: UploadFile = File(...)):
+    try:
+        base64_img = encode_image_base64(file)
+        mime_type = file.content_type or "image/jpeg"
+        description = call_gemini_image_api(base64_img, mime_type)
+        return {"description": description}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/caption-image/")
+async def caption_image(file: UploadFile = File(...)):
+    try:
+        # 1. Convert uploaded image to base64
+        base64_img = encode_image_base64(file)
+        mime_type = file.content_type or "image/jpeg"
+
+        # 2. Get plain image description using Vision model
+        image_description = call_gemini_image_api(base64_img, mime_type)
+
+        # 3. Send description into slang model to generate funny caption
+        messages_for_api = [
+            (slang_instructions, "user"),
+            (f"Make a caption for this image and only return the caption, no other text: {image_description}", "user")
+        ]
+        slang_caption = call_gemini_api(messages_for_api)
+
+        # 4. Return the slang caption
+        return {"caption": slang_caption}
+    
+    except Exception as e:
+        print("Error generating caption:", e)
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Mount static files AFTER defining API routes
+app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")
 
 def call_gemini_api(messages):
     headers = {
@@ -140,61 +194,6 @@ def call_gemini_image_api(base64_image: str, mime_type: str):
     except Exception as e:
         traceback.print_exc()
         raise Exception(f"Gemini Image API Error: {e}")
-
-
-
-@app.post("/api/chat/")
-async def chat_with_slang_model(message_data: Message):
-    user_message = message_data.message
-
-    try:
-        messages_for_api = [
-            (slang_instructions, "user"),
-            (user_message, "user") 
-        ]
-        
-        model_response = call_gemini_api(messages_for_api)
-        return {"response": model_response} 
-        
-    except Exception as e:
-        print(f"Error during chat: {e}")
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Internal server error while processing message: {e}")
-    
-@app.post("/api/describe-image/")
-async def describe_image(file: UploadFile = File(...)):
-    try:
-        base64_img = encode_image_base64(file)
-        mime_type = file.content_type
-        description = call_gemini_image_api(base64_img, mime_type)
-        return {"description": description}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/caption-image/")
-async def caption_image(file: UploadFile = File(...)):
-    try:
-        # 1. Convert uploaded image to base64
-        base64_img = encode_image_base64(file)
-        mime_type = file.content_type
-
-        # 2. Get plain image description using Vision model
-        image_description = call_gemini_image_api(base64_img, mime_type)
-
-        # 3. Send description into slang model to generate funny caption
-        messages_for_api = [
-            (slang_instructions, "user"),
-            (f"Make a caption for this image and only return the caption, no other text: {image_description}", "user")
-        ]
-        slang_caption = call_gemini_api(messages_for_api)
-
-        # 4. Return the slang caption
-        return {"caption": slang_caption}
-    
-    except Exception as e:
-        print("Error generating caption:", e)
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     print("Starting FastAPI server with Gemini API...")
