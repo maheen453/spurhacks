@@ -44,7 +44,7 @@ const ChatBox = () => {
     
     try {
       // Call your Gemini API endpoint
-      const response = await fetch('http://localhost:8000/chat/', {
+      const response = await fetch('/chat/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
