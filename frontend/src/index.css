@@ -9,7 +9,7 @@ html, body {
 
 body {
   background: gray;
-  background-image: url(assets/spursbackground.jpg);
+  background-image: url(/assets/spursbackground.jpg);
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
