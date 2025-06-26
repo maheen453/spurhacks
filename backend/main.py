@@ -3,6 +3,7 @@ import requests
 import json
 import base64
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi import UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -10,12 +11,12 @@ import uvicorn
 from dotenv import load_dotenv
 import traceback
 from typing import Optional
-# import google.generativeai as genai
+
 
 # Load environment variables from .env file
 load_dotenv()
 
-# --- Configuration from environment variables ---
+# Configuration from environment variables
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     raise ValueError("Missing GEMINI_API_KEY environment variable. Check your .env file.")
@@ -25,10 +26,16 @@ GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini
 
 app = FastAPI()
 
+app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173"],  # React dev servers
+    allow_origins=["http://localhost:3000",
+                    "http://localhost:5173", 
+                    "http://127.0.0.1:5173", 
+                    "http://localhost:8000",
+                    "http://127.0.0.1:8000"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
