@@ -143,7 +143,7 @@ def call_gemini_image_api(base64_image: str, mime_type: str):
 
 
 
-@app.post("/chat/")
+@app.post("/api/chat/")
 async def chat_with_slang_model(message_data: Message):
     user_message = message_data.message
 
@@ -161,7 +161,7 @@ async def chat_with_slang_model(message_data: Message):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal server error while processing message: {e}")
     
-@app.post("/describe-image/")
+@app.post("/api/describe-image/")
 async def describe_image(file: UploadFile = File(...)):
     try:
         base64_img = encode_image_base64(file)
@@ -171,7 +171,7 @@ async def describe_image(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/caption-image/")
+@app.post("/api/caption-image/")
 async def caption_image(file: UploadFile = File(...)):
     try:
         # 1. Convert uploaded image to base64

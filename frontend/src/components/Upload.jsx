@@ -35,7 +35,7 @@ const Upload = () => {
       formData.append('file', blob, 'image.jpg');
       
       // Send to your backend
-      const apiResponse = await fetch('/caption-image/', {
+      const apiResponse = await fetch('/api/caption-image/', {
         method: 'POST',
         body: formData,
       });
